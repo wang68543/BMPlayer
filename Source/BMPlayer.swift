@@ -156,11 +156,10 @@ open class BMPlayer: UIView {
         
         if !isURLSet {
             let asset = resource.definitions[currentDefinition]
-            playerLayer?.playAsset(asset: asset.avURLAsset)
-            controlView.hideCoverImageView()
+            playerLayer?.playAsset(asset: asset.avURLAsset) 
             isURLSet = true
         }
-        
+        controlView.hideCoverImageView()
         panGesture.isEnabled = true
         playerLayer?.play()
         isPauseByUser = false
