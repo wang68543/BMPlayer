@@ -418,11 +418,11 @@ open class BMPlayerControlView: UIView {
     }
     
     // MARK: - handle UI slider actions
-    @objc func progressSliderTouchBegan(_ sender: UISlider)  {
+    @objc open func progressSliderTouchBegan(_ sender: UISlider)  {
       delegate?.controlView(controlView: self, slider: sender, onSliderEvent: .touchDown)
     }
     
-    @objc func progressSliderValueChanged(_ sender: UISlider)  {
+    @objc open func progressSliderValueChanged(_ sender: UISlider)  {
       hidePlayToTheEndView()
       cancelAutoFadeOutAnimation()
       let currentTime = Double(sender.value) * totalDuration
@@ -430,14 +430,14 @@ open class BMPlayerControlView: UIView {
       delegate?.controlView(controlView: self, slider: sender, onSliderEvent: .valueChanged)
     }
     
-    @objc func progressSliderTouchEnded(_ sender: UISlider)  {
+    @objc open func progressSliderTouchEnded(_ sender: UISlider)  {
       autoFadeOutControlViewWithAnimation()
       delegate?.controlView(controlView: self, slider: sender, onSliderEvent: .touchUpInside)
     }
     
     
     // MARK: - private functions
-    fileprivate func showSubtile(from subtitle: BMSubtitles, at time: TimeInterval) {
+    open func showSubtile(from subtitle: BMSubtitles, at time: TimeInterval) {
         if let group = subtitle.search(for: time) {
             subtitleBackView.isHidden = false
             subtitleLabel.attributedText = NSAttributedString(string: group.text,
@@ -447,7 +447,7 @@ open class BMPlayerControlView: UIView {
         }
     }
     
-    @objc fileprivate func onDefinitionSelected(_ button:UIButton) {
+    @objc open func onDefinitionSelected(_ button:UIButton) {
         let height = isSelectDefinitionViewOpened ? 35 : resource!.definitions.count * 40
         chooseDefinitionView.snp.updateConstraints { (make) in
             make.height.equalTo(height)
@@ -464,7 +464,7 @@ open class BMPlayerControlView: UIView {
         prepareChooseDefinitionView()
     }
     
-    @objc fileprivate func onReplyButtonPressed() {
+    @objc open func onReplyButtonPressed() {
         replayButton.isHidden = true
     }
     
@@ -488,7 +488,7 @@ open class BMPlayerControlView: UIView {
         
     }
     
-    func setupUIComponents() {
+    open func setupUIComponents() {
         // Subtile view
         subtitleLabel.numberOfLines = 0
         subtitleLabel.textAlignment = .center
@@ -615,7 +615,7 @@ open class BMPlayerControlView: UIView {
         }
     }
     
-    func addSnapKitConstraint() {
+    open func addSnapKitConstraint() {
         // Main mask view
         mainMaskView.snp.makeConstraints { [unowned self](make) in
             make.edges.equalTo(self)
@@ -752,7 +752,7 @@ open class BMPlayerControlView: UIView {
         }
     }
     
-    fileprivate func BMImageResourcePath(_ fileName: String) -> UIImage? {
+    open func BMImageResourcePath(_ fileName: String) -> UIImage? {
         let bundle = Bundle(for: BMPlayer.self)
         return UIImage(named: fileName, in: bundle, compatibleWith: nil)
     }
