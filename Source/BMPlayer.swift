@@ -426,7 +426,9 @@ open class BMPlayer: UIView {
         insertSubview(playerLayer!, at: 0)
         playerLayer!.snp.makeConstraints { [weak self](make) in
           guard let `self` = self else { return }
-          make.edges.equalTo(self)
+//          make.edges.equalTo(self)
+            make.left.right.top.equalToSuperview()
+            make.bottom.equalTo(self.snp.bottomMargin).offset(-50)
         }
         playerLayer!.delegate = self
         controlView.showLoader()
