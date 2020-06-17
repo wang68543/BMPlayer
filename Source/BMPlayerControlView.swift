@@ -307,9 +307,9 @@ open class BMPlayerControlView: UIView {
         seekToView.isHidden = true
     }
     
-    open func showCoverWithLink(_ cover:String) {
-        self.showCover(url: URL(string: cover))
-    }
+//    open func showCoverWithLink(_ cover:String) {
+//        self.showCover(url: URL(string: cover))
+//    }
     
     open func showCover(url: URL?) {
         if let url = url {

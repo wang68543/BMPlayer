@@ -75,9 +75,9 @@ open class BMPlayer: UIView {
     
     fileprivate var currentDefinition = 0
     
-    fileprivate var controlView: BMPlayerControlView!
+    public var controlView: BMPlayerControlView!
     
-    fileprivate var customControlView: BMPlayerControlView?
+    public var customControlView: BMPlayerControlView?
     
     fileprivate var isFullScreen:Bool {
         get {
