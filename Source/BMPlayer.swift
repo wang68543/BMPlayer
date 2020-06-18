@@ -474,8 +474,8 @@ extension BMPlayer: BMPlayerLayerViewDelegate {
             
         case .bufferFinished:
             autoPlay()
-            
         case .playedToTheEnd:
+            isPauseByUser = true // 用于暂停
             isPlayToTheEnd = true
             
         default:
@@ -563,9 +563,10 @@ extension BMPlayer: BMPlayerControlViewDelegate {
             
             if isPlayToTheEnd {
                 isPlayToTheEnd = false
-                seek(target, completion: {[weak self] in
-                  self?.play()
-                })
+                seek(target, completion: nil) //播放完成之后 再拖动 不自动播放
+//                seek(target, completion: {[weak self] in
+//                  self?.play()
+//                })
                 controlView.hidePlayToTheEndView()
             } else {
                 seek(target, completion: {[weak self] in

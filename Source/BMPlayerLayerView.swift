@@ -124,7 +124,7 @@ open class BMPlayerLayerView: UIView {
     /// 是否点了重播
     fileprivate var repeatToPlay  = false
     /// 播放完了
-    fileprivate var playDidEnd    = false
+    internal var playDidEnd    = false
     // playbackBufferEmpty会反复进入，因此在bufferingOneSecond延时播放执行完之前再调用bufferingSomeSecond都忽略
     // 仅在bufferingSomeSecond里面使用
     fileprivate var isBuffering     = false
