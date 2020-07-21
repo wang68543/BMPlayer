@@ -67,6 +67,7 @@ open class BMPlayerLayerView: UIView {
     open lazy var player: AVPlayer? = {
         if let item = self.playerItem {
             let player = AVPlayer(playerItem: item)
+            player.addObserver(self, forKeyPath: "rate", options: NSKeyValueObservingOptions.new, context: nil)
             return player
         }
         return nil
@@ -131,6 +132,8 @@ open class BMPlayerLayerView: UIView {
     fileprivate var hasReadyToPlay  = false
     fileprivate var shouldSeekTo: TimeInterval = 0
     
+    
+    fileprivate var isPrePlaying: Bool = false
     // MARK: - Actions
     open func playURL(url: URL) {
         let asset = AVURLAsset(url: url)
@@ -198,7 +201,7 @@ open class BMPlayerLayerView: UIView {
       self.playerLayer?.removeFromSuperlayer()
       // 替换PlayerItem为nil
       self.player?.replaceCurrentItem(with: nil)
-      player?.removeObserver(self, forKeyPath: "rate")
+//      player?.removeObserver(self, forKeyPath: "rate")
       
       // 把player置为nil
       self.player = nil
@@ -265,20 +268,47 @@ open class BMPlayerLayerView: UIView {
             item.addObserver(self, forKeyPath: "playbackLikelyToKeepUp", options: NSKeyValueObservingOptions.new, context: nil)
         }
     }
-    
-    fileprivate func configPlayer(){
-        player?.removeObserver(self, forKeyPath: "rate")
-        playerItem = AVPlayerItem(asset: urlAsset!)
-        player     = AVPlayer(playerItem: playerItem!)
-        player!.addObserver(self, forKeyPath: "rate", options: NSKeyValueObservingOptions.new, context: nil)
-        self.connectPlayerLayer()
-        setNeedsLayout()
-        layoutIfNeeded()
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(self.connectPlayerLayer), name: UIApplication.willEnterForegroundNotification, object: nil)
+    lazy var dispatchOnce: Void = {
+
+          NotificationCenter.default.addObserver(self, selector: #selector(applicationWillEnterForeground(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(self.disconnectPlayerLayer), name: UIApplication.didEnterBackgroundNotification, object: nil)
+    }()
+    fileprivate func configPlayer(){
+        playerItem = AVPlayerItem(asset: urlAsset!)
+        if player == nil  {
+          player   = AVPlayer(playerItem: playerItem!)
+          player!.addObserver(self, forKeyPath: "rate", options: NSKeyValueObservingOptions.new, context: nil)
+          self.connectPlayerLayer()
+          setNeedsLayout()
+          layoutIfNeeded()
+        } else {
+            player?.replaceCurrentItem(with: playerItem)
+            self.connectPlayerLayer()
+        }
+        _ = self.dispatchOnce
+//        player?.removeObserver(self, forKeyPath: "rate")
+//        playerItem = AVPlayerItem(asset: urlAsset!)
+//        player     = AVPlayer(playerItem: playerItem!)
+//        player!.addObserver(self, forKeyPath: "rate", options: NSKeyValueObservingOptions.new, context: nil)
+//        self.connectPlayerLayer()
+//        setNeedsLayout()
+//        layoutIfNeeded()
+//
+//        NotificationCenter.default.addObserver(self, selector: #selector(self.connectPlayerLayer), name: UIApplication.willEnterForegroundNotification, object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(self.disconnectPlayerLayer), name: UIApplication.didEnterBackgroundNotification, object: nil)
     }
-    
+    @objc func applicationWillEnterForeground(_ note: Notification) {
+        debugPrint("============")
+        connectPlayerLayer()
+//        if #available(iOS 13.0, *) {
+//                  
+//              } else { //iOS 12
+//            self.play()
+//              }
+    }
+//    @objc func applicationDidEnterBackground(_ note: Notification) {
+//
+//    }
     func setupTimer() {
         timer?.invalidate()
         timer = Timer.scheduledTimer(timeInterval: 0.5, target: self, selector: #selector(playerTimerAction), userInfo: nil, repeats: true)
@@ -445,12 +475,13 @@ open class BMPlayerLayerView: UIView {
         }
     }
     
-    @objc fileprivate func connectPlayerLayer() {
-        playerLayer?.removeFromSuperlayer()
-        playerLayer = AVPlayerLayer(player: player)
-        playerLayer!.videoGravity = videoGravity
-        
-        layer.addSublayer(playerLayer!)
+    @objc fileprivate func connectPlayerLayer() { 
+//        if playerLayer == nil || playerLayer?.superlayer == nil  {
+            playerLayer?.removeFromSuperlayer()
+            playerLayer = AVPlayerLayer(player: player)
+            playerLayer!.videoGravity = videoGravity
+            layer.addSublayer(playerLayer!)
+//        }
     }
     
     @objc fileprivate func disconnectPlayerLayer() {
